@@ -4,6 +4,7 @@ class ArraysAndStrings {
         aas.testAllUniqueCharacters();
         aas.testReverseString();
         aas.testIsPermutation();
+        aas.testReplaceSpaces();
     }
 
     // 1.1
@@ -102,8 +103,67 @@ class ArraysAndStrings {
     }
 
     // 1.4
-    // TODO
-    public char[] replaceSpaces(char[] inputString){
+    // ['a',' ','b',' ',' '] 3 spaces, diff starts at 2
+    // ['a','%','2','0', 'b']
+
+    // [' ',' ','b',' ',' ',' ',' '] 6 spaces, diff starts at 4
+    // ['%','2','0','%','2','0', 'b']
+
+    // [' ',' ',' ','b',' ',' ',' ',' ',' ',' '] // 9 spaces, diff starts at 6
+    // ['%','2','0','%','%','2','0','%','%','2','0','%','b']
+
+    // [' ', ' ', ' ',' ','b',' ', ' ',' ', ' ',' ', ' ',' ',' ' ]
+    //
+    // ['%','2', '0','%','%','2', '0','%','%','2', '0','%','b']
+
+    // ['a',]
+    public char[] replaceSpaces(char[] inputString) {
+        int totalSpaces = 0;
+        int extraSpaces = 0;
+        // count spaces
+        for (int i = 0; i < inputString.length; i++) {
+            if (inputString[i] == '_') {
+                totalSpaces++;
+            }
+        }
+        extraSpaces = totalSpaces - (totalSpaces / 3);
+        for (int i = inputString.length - 1 - extraSpaces; extraSpaces > 0; i--) {
+            if (inputString[i] == '_') {
+                inputString[i + extraSpaces - 2] = '%';
+                inputString[i + extraSpaces - 1] = '2';
+                inputString[i + extraSpaces] = '0';
+                extraSpaces = extraSpaces - 2;
+            } else {
+                this.copy(inputString, i, i + extraSpaces);
+            }
+        }
         return inputString;
+    }
+
+    public void testReplaceSpaces() {
+        System.out.println("1.4 Tests");
+        System.out.println();
+        char[][] tests = new char[][] { { '_', '_', '_' }, { 'N', 'O' }, { 'a', '_', '_', '_' },
+                { '_', 'a', '_', '_' }, { '_', '_', 'a', '_', '_', '_', '_' },
+                { 'b', '_', '_', 'a', '_', '_', '_', '_' } };
+        for (int i = 0; i < tests.length; i++) {
+            this.printCharArray(tests[i]);
+            System.out.print(" : ");
+            this.printCharArray(this.replaceSpaces(tests[i]));
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    // swaps a and b
+    private void swap(char[] arr, int indexA, int indexB) {
+        char temp = arr[indexA];
+        arr[indexA] = arr[indexB];
+        arr[indexB] = temp;
+    }
+
+    // copies from a to b replacing b
+    private void copy(char[] arr, int indexA, int indexB) {
+        arr[indexB] = arr[indexA];
     }
 }
